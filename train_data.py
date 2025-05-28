@@ -3,13 +3,13 @@ import tensorflow as tf  # for building and training the model
 from tensorflow.python.keras.callbacks import ModelCheckpoint  # for saving the best model
 import pandas as pd  # for creating and handling dataframe
 import matplotlib.pyplot as plt  # for plotting graphs
-import numpy as np  # for numerical operations
-import seaborn as sns  # for nice looking plots
+import numpy as np  # for numerical computations
+import seaborn as sns 
 from sklearn.metrics import confusion_matrix  # for evaluating model performance with confusion matrix
 
 print(tf.version.VERSION)  # print out the TensorFlow version to confirm it's installed properly
 
-data_dir = "dataset"  # the main directory where the folders of images are stored
+data_dir = "dataset"  
 
 # gather all image paths and assign labels based on folder names
 folders = os.listdir(data_dir)
@@ -46,14 +46,14 @@ img_width = 350
 # split data into training and validation sets
 train_ds, val_ds = tf.keras.utils.image_dataset_from_directory(
     data_dir,
-    labels="inferred",  # label images based on folder name
-    label_mode="int",  # use integer labels
-    class_names=None,  # automatically detect class names
-    color_mode="rgb",  # images will have RGB color
-    batch_size=32,  # process images in batches of 32
+    labels="inferred", 
+    label_mode="int", 
+    class_names=None,  
+    color_mode="rgb", 
+    batch_size=32,  
     image_size=(img_height, img_width),  # resize all images to 350x350
     shuffle=True,
-    seed=17,  # for reproducibility
+    seed=17,  
     validation_split=0.1,  # use 10% of data for validation
     subset="both",  # get both training and validation data
     interpolation="bilinear",
@@ -95,7 +95,7 @@ resnet = tf.keras.applications.ResNet50V2(
     classes=1000,
     classifier_activation='softmax'
 )
-resnet.trainable = True  # allow the model to be trained
+resnet.trainable = True  
 
 # freeze all layers except the last few
 for layer in resnet.layers[:-7]:
@@ -104,16 +104,16 @@ for layer in resnet.layers[:-7]:
 # define the complete model
 model = tf.keras.models.Sequential([
     resnet,
-    layers.GlobalAveragePooling2D(),  # reduce spatial dimensions
+    layers.GlobalAveragePooling2D(), 
     layers.Dense(256, activation='relu'),
     layers.Dense(64, activation='relu'),
-    layers.Dense(class_cnt, activation='softmax')  # output layer
+    layers.Dense(class_cnt, activation='softmax')  
 ])
 
 # set up a checkpoint to save the best performing model
 savepoint = "model.h5"
 checkpoint = ModelCheckpoint(savepoint,
-                             monitor='accuracy',  # track accuracy
+                             monitor='accuracy', 
                              save_best_only=True,
                              verbose=1)
 
